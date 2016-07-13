@@ -1,15 +1,6 @@
 <?php
 
 return array(
-    'db' => array(
-        'driver' => 'Pdo',
-        'username' => 'root',
-        'password' => 'password',
-        'dsn' => 'mysql:dbname=blog;host=localhost',
-        'driver_options' => array(
-            \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
-        )
-    ),
     'service_manager' => array(
         'factories' => array(
             'Blog\Mapper\PostMapperInterface' => 'Blog\Factory\ZendDbSqlMapperFactory',
