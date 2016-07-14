@@ -13,7 +13,7 @@
       *
       * @param ServiceLocatorInterface $serviceLocator
       *
-      * @return mixed
+      * @return ListController instance
       */
      public function createService(ServiceLocatorInterface $serviceLocator)
      {

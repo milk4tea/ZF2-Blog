@@ -8,7 +8,27 @@ use Blog\Model\PostInterface;
  * @author jeremy
  */
 interface PostMapperInterface {
+    
+    /**
+     * 
+     * @param int|string $id
+     * @return PostInterface
+     * @throws \InvalidArgumentException
+     */
     public function find($id);
     
+    
+    /**
+     * 
+     * @return array|Postinterface[]
+     */
     public function findAll();
+    
+    /**
+     * 
+     * @param PostInterface $postObject
+     * @return PostInterface
+     * @throws \Exception
+     */
+    public function save(PostInterface $postObject);
 }

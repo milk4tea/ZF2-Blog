@@ -7,6 +7,8 @@ namespace Blog\Mapper;
  use Zend\Db\Adapter\Driver\ResultInterface;
  use Zend\Db\ResultSet\HydratingResultSet;
  use Zend\Stdlib\Hydrator\HydratorInterface;
+ use Zend\Db\Sql\Insert;
+ use Zend\Db\Sql\Update;
  
 /**
  * Description of ZendDbSqlMapper
@@ -18,7 +20,12 @@ class ZendDbSqlMapper implements PostMapperInterface {
     protected $hydrator;
     protected $postPrototype;
 
-
+    /**
+     * 
+     * @param AdapterInterface $dbAdapter
+     * @param HydratorInterface $hydrator
+     * @param PostInterface $postPrototype
+     */
     public function __construct(
             AdapterInterface $dbAdapter,
             HydratorInterface $hydrator,
@@ -29,7 +36,13 @@ class ZendDbSqlMapper implements PostMapperInterface {
         $this->postPrototype = $postPrototype;
     }
 
-
+    /**
+     * 
+     * @param inst|string  $id
+     * 
+     * @return PostInterface
+     * @throws \InvalidArgumentException
+     */
     public function find($id) {
         $sql = new Sql($this->dbAdapter);
         $select = $sql->select('posts');
@@ -45,6 +58,10 @@ class ZendDbSqlMapper implements PostMapperInterface {
         throw new \InvalidArgumentException("Blog with given ID:{$id} not found.");
     }
 
+    /**
+     * 
+     * @return array|PostInterface[]
+     */
     public function findAll() {
         $sql = new Sql($this->dbAdapter);
         $select = $sql->select('posts');
@@ -59,6 +76,42 @@ class ZendDbSqlMapper implements PostMapperInterface {
         }
         
         return array();
+    }
+
+    
+    /**
+     * 
+     * @param PostInterface $postObject
+     * 
+     * @return PostInterface
+     * @throws \Exception
+     */
+    public function save(PostInterface $postObject) {
+        $postData = $this->hydrator->extract($postObject);
+        unset($postData['id']);
+        
+        if($postObject->getId()) {
+            $action = new Update('posts');
+            $action->set($postData);
+            $action->where(array('id = ?' => $postObject->getId()));
+        } else {
+            $action = new Insert('posts');
+            $action->values($postData);
+        }
+        
+        $sql = new Sql($this->dbAdapter);
+        $stmt = $sql->prepareStatementForSqlObject($action);
+        $result = $stmt->execute();
+        
+        if($result instanceof ResultInterface) {
+            if($newId = $result->getGeneratedValue()) {
+                $postObject->setId($newId);
+            }
+            
+            return $postObject;
+        }
+        
+        throw new \Exception("Database error");
     }
 
 }

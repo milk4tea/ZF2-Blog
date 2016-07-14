@@ -3,6 +3,7 @@
 namespace Blog\Service;
 
 use Blog\Mapper\PostMapperInterface;
+use Blog\Model\PostInterface;
 
 /**
  * Description of PostService
@@ -23,6 +24,10 @@ class PostService implements PostServiceInterface {
 
     public function findPost($id) {
         return $this->postMapper->find($id);
+    }
+
+    public function savePost(PostInterface $blog) {
+        return $this->postMapper->save($blog);
     }
 
 }
