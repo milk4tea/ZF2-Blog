@@ -9,6 +9,7 @@ namespace Blog\Mapper;
  use Zend\Stdlib\Hydrator\HydratorInterface;
  use Zend\Db\Sql\Insert;
  use Zend\Db\Sql\Update;
+ use Zend\Db\Sql\Delete;
  
 /**
  * Description of ZendDbSqlMapper
@@ -112,6 +113,18 @@ class ZendDbSqlMapper implements PostMapperInterface {
         }
         
         throw new \Exception("Database error");
+    }
+
+    public function delete(PostInterface $postObject) {
+        $action = new Delete();
+        $action->where(array('id = ?' => $postObject->getId()));
+        
+        $sql = new Sql($this->dbAdapter);
+        $stmt = $sql->prepareStatementForSqlObject($sql);
+        $result = $stmt->execute();
+        
+        return (bool) $result->getAffectedRows();
+        
     }
 
 }

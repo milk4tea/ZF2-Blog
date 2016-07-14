@@ -30,4 +30,8 @@ class PostService implements PostServiceInterface {
         return $this->postMapper->save($blog);
     }
 
+    public function deletePost(PostInterface $blog) {
+        return $this->postMapper->delete($post);
+    }
+
 }
