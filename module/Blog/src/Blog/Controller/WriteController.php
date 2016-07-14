@@ -43,8 +43,8 @@ class WriteController extends AbstractActionController {
             if($this->postForm->isValid()) {
                 try {
                     $postData = $this->postForm->getData();
-                    $postData = $postData['post-fieldset'];
-                    $postObject = $this->hydrator->hydrate($postData, $this->postPrototype);
+                    $data = $postData['post-fieldset'];
+                    $postObject = $this->hydrator->hydrate($data, $this->postPrototype);
                     $this->postService->savePost($postObject);                    
                     return $this->redirect()->toRoute('blog');
                 } catch (\Exception $ex) {
