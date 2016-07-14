@@ -6,9 +6,6 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Blog\Service\PostServiceInterface;
 use Blog\Form\PostForm;
 use Zend\View\Model\ViewModel;
-use Zend\Stdlib\Hydrator\HydratorInterface;
-use Blog\Model\Post;
-use Blog\Model\PostInterface;
 
 /**
  * Description of WriteController
@@ -18,20 +15,13 @@ use Blog\Model\PostInterface;
 class WriteController extends AbstractActionController {
     protected $postService;
     protected $postForm;    
-    protected $hydrator;
-    protected $postPrototype;
-
 
     public function __construct(
             PostServiceInterface $postService,
-            PostForm $postForm,
-            HydratorInterface $hydrator,
-            PostInterface $postPrototype
+            PostForm $postForm
     ) {
         $this->postService = $postService;
         $this->postForm = $postForm;
-        $this->hydrator = $hydrator;
-        $this->postPrototype = $postPrototype;
     }
     
     public function addAction() {
@@ -42,10 +32,7 @@ class WriteController extends AbstractActionController {
             
             if($this->postForm->isValid()) {
                 try {
-                    $postData = $this->postForm->getData();
-                    $data = $postData['post-fieldset'];
-                    $postObject = $this->hydrator->hydrate($data, $this->postPrototype);
-                    $this->postService->savePost($postObject);                    
+                    $this->postService->savePost($this->postForm->getData());                    
                     return $this->redirect()->toRoute('blog');
                 } catch (\Exception $ex) {
                     echo $ex->getMessage();

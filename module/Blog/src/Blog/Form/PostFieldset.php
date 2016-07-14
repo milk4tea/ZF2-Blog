@@ -4,6 +4,7 @@ namespace Blog\Form;
 
 use Zend\Form\Fieldset;
 use Blog\Model\Post;
+use Zend\Stdlib\Hydrator\ClassMethods;
 
 /**
  * Description of PostFieldset
@@ -15,7 +16,7 @@ class PostFieldset extends Fieldset {
     public function __construct($name = null, $options = array()) {
         
         parent::__construct($name, $options);
-        
+        $this->setHydrator(new ClassMethods(false));
         $this->setObject(new Post());
         
         $this->add(array(
